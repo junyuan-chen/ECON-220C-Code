@@ -24,8 +24,8 @@ function simulate!(Est::Estimates, N::Int, T::Int)
         mU = mΣ .* randn(T, N)
         mY = mX .+ mU
 
-        mY = mY .- mean(mY, 1)
-        mX = mX .- mean(mX, 1)
+        mY .= mY .- mean(mY, 1)
+        mX .= mX .- mean(mX, 1)
         Est.β_h[i] = (mX[:]\mY[:])[1]
 
         mU_h = mY - mX * Est.β_h[i]
@@ -64,15 +64,16 @@ function plot_sigma(Est::Estimates, fname::String = "no_name")
     savefig(string("Problem-Set-1/Figure/", fname, ".pdf"))
 end
 
-E1 = Estimates(1000)
+N =  1000
+E1 = Estimates(N)
 @time simulate!(E1, 500, 5)
 report_statistics(E1)
 
-E2 = Estimates(1000)
+E2 = Estimates(N)
 @time simulate!(E2, 500, 10)
 report_statistics(E2)
 
-E3 = Estimates(1000)
+E3 = Estimates(N)
 @time simulate!(E3, 500, 20)
 report_statistics(E3)
 
