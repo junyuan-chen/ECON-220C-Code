@@ -48,10 +48,8 @@ end
 function plot_beta(Est::Estimates; fname::String = "no_name")
     matplotlib[:style][:use]("seaborn-whitegrid")
     fig, ax = subplots(figsize=(3.2, 3))
-    #plot(Est.β_h, type = :density)
-    ax[:hist](Est.β_h, bins = 20) #density = true
-    #PyPlot.plt[:hist](Est.β_h,normed=true)
-    #ax[:legend](loc="upper right", frameon = true)
+    ax[:hist](Est.β_h, bins = 20, label = L"$\hat{\beta}$")
+    ax[:legend](loc = "upper right", frameon = true)
     tight_layout(pad = 0.1)
     #savefig(string("Figure/", fname, ".pdf"))
 end
@@ -59,9 +57,9 @@ end
 function plot_sigma(Est::Estimates; fname::String = "no_name")
     matplotlib[:style][:use]("seaborn-whitegrid")
     fig, ax = subplots(figsize=(3.2, 3))
-    #plot(Est.β_h, type = :density)
-    ax[:hist](Est.σ_β1, bins = 20, alpha = 0.8)
-    ax[:hist](Est.σ_β2, bins = 20, alpha = 0.8) #normed = true
+    ax[:hist](Est.σ_β1, bins = 20, alpha = 0.8, label = L"$\hat{\sigma}_\beta$")
+    ax[:hist](Est.σ_β2, bins = 20, alpha = 0.8, label = L"$\tilde{\sigma}_\beta$")
+    ax[:legend](loc = "upper right", frameon = true)
     tight_layout(pad = 0.1)
     #savefig(string("Figure/", fname, ".pdf"))
 end
