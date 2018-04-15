@@ -45,23 +45,23 @@ function report_statistics(Est::Estimates)
     println("root mean squared error of σ_h1: ", round(sqrt(bias1^2+std(Est.σ_β1)^2),n), "   rmse of σ_h2: ", round(sqrt(bias2^2+std(Est.σ_β2)^2),n))
 end
 
-function plot_beta(Est::Estimates; fname::String = "no_name")
+function plot_beta(Est::Estimates, fname::String = "no_name")
     matplotlib[:style][:use]("seaborn-whitegrid")
     fig, ax = subplots(figsize=(3.2, 3))
     ax[:hist](Est.β_h, bins = 20, label = L"$\hat{\beta}$")
     ax[:legend](loc = "upper right", frameon = true)
     tight_layout(pad = 0.1)
-    #savefig(string("Figure/", fname, ".pdf"))
+    savefig(string("Problem-Set-1/Figure/", fname, ".pdf"))
 end
 
-function plot_sigma(Est::Estimates; fname::String = "no_name")
+function plot_sigma(Est::Estimates, fname::String = "no_name")
     matplotlib[:style][:use]("seaborn-whitegrid")
     fig, ax = subplots(figsize=(3.2, 3))
     ax[:hist](Est.σ_β1, bins = 20, alpha = 0.8, label = L"$\hat{\sigma}_\beta$")
     ax[:hist](Est.σ_β2, bins = 20, alpha = 0.8, label = L"$\tilde{\sigma}_\beta$")
     ax[:legend](loc = "upper right", frameon = true)
     tight_layout(pad = 0.1)
-    #savefig(string("Figure/", fname, ".pdf"))
+    savefig(string("Problem-Set-1/Figure/", fname, ".pdf"))
 end
 
 E1 = Estimates(1000)
@@ -76,5 +76,7 @@ E3 = Estimates(1000)
 @time simulate!(E3, 500, 20)
 report_statistics(E3)
 
-plot_beta(E1)
-plot_sigma(E1)
+fname_beta = ["hist_beta5", "hist_beta10", "hist_beta20"]
+fname_sigma = ["hist_sigma5", "hist_sigma10", "hist_sigma20"]
+plot_beta.([E1, E2, E3], fname_beta)
+plot_sigma.([E1, E2, E3], fname_sigma)
