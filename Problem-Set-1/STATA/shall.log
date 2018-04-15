@@ -1,0 +1,156 @@
+---------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/chen/Documents/OneDrive/UCSD/ECON 220C Econometrics C/GitHub/ECON-220C-Code/Problem-Set-1/STATA/shall.log
+  log type:  text
+ opened on:  15 Apr 2018, 11:16:30
+
+. use handguns.dta
+
+. desc
+
+Contains data from handguns.dta
+  obs:         1,173                          
+ vars:            24                          25 May 2007 23:19
+ size:       114,954                          
+---------------------------------------------------------------------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+---------------------------------------------------------------------------------------------------------------------------------------------
+year            byte    %9.0g                 
+stpop           long    %12.0g                (US Census Bureau - see 'SOURCES' note in this folder)
+state           str20   %20s                  
+area            long    %9.0g                 Land Area in Sq Miles (Statistical Abstract of the U.S.)
+vio             float   %9.0g                 Violent Crime Rate per 100,000 population (BJS)
+mur             float   %9.0g                 Murder Crime Rate per 100,000 population (BJS)
+rap             float   %9.0g                 Rape Crime Rate per 100,000 population (BJS)
+rob             float   %9.0g                 Robbery Crime Rate per 100,000 population (BJS)
+aga             float   %9.0g                 Aggravated Assault Crime Rate per 100,000 population (BJS)
+pro             float   %9.0g                 Property Crime Rate per 100,000 population (BJS)
+bur             float   %9.0g                 Burglary Crime Rate per 100,000 population (BJS)
+lar             float   %9.0g                 Larceny Crime Rate per 100,000 population (BJS)
+aut             float   %9.0g                 Motor Vehicle Crime Rate per 100,000 population (BJS)
+yradopt         byte    %9.0g                 Year of shall-issue law adoption (77=adoption prior to 1977, 0=never adopted)
+incarc_rate     int     %8.0g                 72-99 ONLY - Lagged Rate per 100,000 resident pop of sentenced prisoners in Stat
+pb1064          float   %9.0g                 percent of state population that is black, ages 10 to 64
+pn1064          float   %9.0g                 
+pw1064          float   %9.0g                 percent of state population that is white, ages 10 to 64
+pm1029          float   %9.0g                 percent of state population that is male, ages 10 to 29
+pop             float   %9.0g                 
+avginc          float   %9.0g                 real per capita personal income in the state, in thousands of dollars
+density         float   %9.0g                 population per square mile of land area, divided by 1000
+stateid         byte    %9.0g                 
+shall           byte    %9.0g                  shall
+ = 1 if the state has a shall-carry law in effect in that year
+ = 0
+---------------------------------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+
+. summarize
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        year |      1,173          88    6.636079         77         99
+       stpop |      1,173     4816341     5252115     402753   3.31e+07
+       state |          0
+        area |      1,173     69374.6    84715.29         61     570833
+         vio |      1,173    503.0747    334.2772         47     2921.8
+-------------+---------------------------------------------------------
+         mur |      1,173    7.665132     7.52271         .2       80.6
+         rap |      1,173    35.13069    14.63627        7.3      102.2
+         rob |      1,173    161.8202      170.51        6.4     1635.1
+         aga |      1,173    298.4576    179.9605       31.3     1557.6
+         pro |      1,173    4526.201    1224.556     2053.4     9512.1
+-------------+---------------------------------------------------------
+         bur |      1,173    1137.862    422.1508      307.9     2906.7
+         lar |      1,173    2967.003    759.4779     1235.6     5833.8
+         aut |      1,173    421.3374    237.8319       95.5     1839.9
+     yradopt |      1,173    53.68627    43.50914          0         96
+ incarc_rate |      1,173    226.5797    178.8881         19       1913
+-------------+---------------------------------------------------------
+      pb1064 |      1,173    5.336217    4.885688   .2482066   26.97957
+      pn1064 |      1,173    3.129334    6.562466   .2297588   51.12635
+      pw1064 |      1,173    62.94543    9.761527   21.78043   76.52575
+      pm1029 |      1,173    16.08113    1.732143   12.21368   22.35269
+         pop |      1,173    4.816341    5.252115    .402753   33.14512
+-------------+---------------------------------------------------------
+      avginc |      1,173     13.7248    2.554543   8.554884   23.64671
+     density |      1,173    .3520382    1.355472   .0007071   11.10212
+     stateid |      1,173    28.96078    15.68352          1         56
+       shall |      1,173    .2429668    .4290581          0          1
+
+. gen log_vio=log(vio)
+
+. gen log_mur=log(mur)
+
+. gen log_rob=log(rob)
+
+. 
+. * Question 1
+. 
+. *reg log_vio shall, r
+. /*
+> esttab using P5Q1.tex, label nostar replace booktabs
+> reg log_mur shall, r
+> esttab using P5Q1.tex, label nostar append booktabs
+> reg log_rob shall, r
+> esttab using P5Q1.tex, label nostar append booktabs
+> */
+. eststo clear
+
+. eststo: reg log_vio shall, r
+
+Linear regression                               Number of obs     =      1,173
+                                                F(1, 1171)        =      86.86
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0866
+                                                Root MSE          =     .61735
+
+------------------------------------------------------------------------------
+             |               Robust
+     log_vio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.4429646   .0475283    -9.32   0.000    -.5362148   -.3497144
+       _cons |   6.134919   .0193039   317.81   0.000     6.097045    6.172793
+------------------------------------------------------------------------------
+(est1 stored)
+
+. eststo: reg log_mur shall, r
+
+Linear regression                               Number of obs     =      1,173
+                                                F(1, 1171)        =      95.12
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0834
+                                                Root MSE          =     .67375
+
+------------------------------------------------------------------------------
+             |               Robust
+     log_mur |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.4733725    .048536    -9.75   0.000    -.5685997   -.3781452
+       _cons |   1.897556   .0219606    86.41   0.000     1.854469    1.940642
+------------------------------------------------------------------------------
+(est2 stored)
+
+. eststo: reg log_rob shall, r
+
+Linear regression                               Number of obs     =      1,173
+                                                F(1, 1171)        =     124.66
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1208
+                                                Root MSE          =     .89548
+
+------------------------------------------------------------------------------
+             |               Robust
+     log_rob |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.7733207   .0692623   -11.17   0.000    -.9092128   -.6374286
+       _cons |   4.873051   .0279093   174.60   0.000     4.818293    4.927809
+------------------------------------------------------------------------------
+(est3 stored)
+
+. esttab using P5Q1.tex, se r2 nostar replace booktabs
+(output written to P5Q1.tex)
+
+. 
+end of do-file
+
