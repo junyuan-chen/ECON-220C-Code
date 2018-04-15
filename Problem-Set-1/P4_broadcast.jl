@@ -16,7 +16,7 @@ function Estimates(nReplic::Int)
     return Estimates(β_h, σ_β1, σ_β2, nReplic)
 end
 
-function simulate!(β_h::AbstractFloat, σ_β1::AbstractFloat, σ_β2::AbstractFloat, N::Int, T::Int)
+function simulate!(Est::Estimates, i::Int, N::Int, T::Int)
     mX = randn(T, N)
     mΣ = abs.(mX)
     mU = mΣ .* randn(T, N)
@@ -24,11 +24,11 @@ function simulate!(β_h::AbstractFloat, σ_β1::AbstractFloat, σ_β2::AbstractF
 
     mY .= mY .- mean(mY, 1)
     mX .= mX .- mean(mX, 1)
-    β_h = (mX[:]\mY[:])[1]
+    Est.β_h[i] = (mX[:]\mY[:])[1]
 
-    mU_h = mY - mX * β_h
-    σ_β1 = sqrt((mX[:]' * mX[:])^(-2) * sum(sum(mX .* mU_h, 1).^2))
-    σ_β2 = sqrt((mX[:]' * mX[:])^(-2) * sum(mX.^2 .* mU_h.^2))
+    mU_h = mY - mX * Est.β_h[i]
+    Est.σ_β1[i] = sqrt((mX[:]' * mX[:])^(-2) * sum(sum(mX .* mU_h, 1).^2))
+    Est.σ_β2[i] = sqrt((mX[:]' * mX[:])^(-2) * sum(mX.^2 .* mU_h.^2))
 end
 
 function report_statistics(Est::Estimates)
@@ -61,16 +61,20 @@ function plot_sigma(Est::Estimates, fname::String = "no_name")
     savefig(string("Problem-Set-1/Figure/", fname, ".pdf"))
 end
 
-E1 = Estimates(1000)
-@time simulate!.(E1.β_h, E1.σ_β1, E1.σ_β2, 500, 5)
+N = 1000
+E1 = Estimates(N)
+srand(10)
+@time simulate!.(E1, 1:N, 500, 5)
 report_statistics(E1)
 
-E2 = Estimates(1000)
-@time simulate!.(E2.β_h, E2.σ_β1, E2.σ_β2, 500, 10)
+E2 = Estimates(N)
+srand(10)
+@time simulate!.(E2, 1:N, 500, 10)
 report_statistics(E2)
 
-E3 = Estimates(1000)
-@time simulate!.(E3.β_h, E3.σ_β1, E3.σ_β2, 500, 20)
+E3 = Estimates(N)
+srand(10)
+@time simulate!.(E3, 1:N, 500, 20)
 report_statistics(E3)
 
 fname_beta = ["hist_beta5", "hist_beta10", "hist_beta20"]
