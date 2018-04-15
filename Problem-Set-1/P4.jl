@@ -18,10 +18,14 @@ end
 
 function simulate!(Est::Estimates, N::Int, T::Int)
     srand(10)
+    mX = zeros(T, N)
+    mΣ = zeros(T, N)
+    mU = zeros(T, N)
+    mY = zeros(T, N)
     for i = 1:Est.nReplic
-        mX = randn(T,N)
+        mX = randn(T, N)
         mΣ = abs.(mX)
-        mU = mΣ .* randn(T,N)
+        mU = mΣ .* randn(T, N)
         mY = mX .+ mU
 
         mY = mY .- mean(mY, 1)
