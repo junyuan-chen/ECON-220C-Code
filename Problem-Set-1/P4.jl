@@ -51,7 +51,7 @@ function plot_beta(Est::Estimates, fname::String = "no_name")
     ax[:hist](Est.β_h, bins = 20, label = L"$\hat{\beta}$")
     ax[:legend](loc = "upper right", frameon = true)
     tight_layout(pad = 0.1)
-    savefig(string("Problem-Set-1/Figure/", fname, ".pdf"))
+    savefig(string("Figure/", fname, ".pdf"))
 end
 
 function plot_sigma(Est::Estimates, fname::String = "no_name")
@@ -61,7 +61,7 @@ function plot_sigma(Est::Estimates, fname::String = "no_name")
     ax[:hist](Est.σ_β2, bins = 20, alpha = 0.8, label = L"$\tilde{\sigma}_\beta$")
     ax[:legend](loc = "upper right", frameon = true)
     tight_layout(pad = 0.1)
-    savefig(string("Problem-Set-1/Figure/", fname, ".pdf"))
+    savefig(string("Figure/", fname, ".pdf"))
 end
 
 N =  1000
