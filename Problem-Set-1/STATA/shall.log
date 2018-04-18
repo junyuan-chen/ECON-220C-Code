@@ -1,8 +1,9 @@
----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /Users/chen/Documents/OneDrive/UCSD/ECON 220C Econometrics C/GitHub/ECON-220C-Code/Problem-Set-1/STATA/shall.log
+       log:  /Users/chen/Documents/OneDrive/UCSD/ECON 220C Econometrics C/GitHub/
+> ECON-220C-Code/Problem-Set-1/STATA/shall.log
   log type:  text
- opened on:  15 Apr 2018, 11:16:30
+ opened on:  18 Apr 2018, 14:05:12
 
 . use handguns.dta
 
@@ -12,37 +13,60 @@ Contains data from handguns.dta
   obs:         1,173                          
  vars:            24                          25 May 2007 23:19
  size:       114,954                          
----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
               storage   display    value
 variable name   type    format     label      variable label
----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 year            byte    %9.0g                 
-stpop           long    %12.0g                (US Census Bureau - see 'SOURCES' note in this folder)
+stpop           long    %12.0g                (US Census Bureau - see 'SOURCES'
+                                                note in this folder)
 state           str20   %20s                  
-area            long    %9.0g                 Land Area in Sq Miles (Statistical Abstract of the U.S.)
-vio             float   %9.0g                 Violent Crime Rate per 100,000 population (BJS)
-mur             float   %9.0g                 Murder Crime Rate per 100,000 population (BJS)
-rap             float   %9.0g                 Rape Crime Rate per 100,000 population (BJS)
-rob             float   %9.0g                 Robbery Crime Rate per 100,000 population (BJS)
-aga             float   %9.0g                 Aggravated Assault Crime Rate per 100,000 population (BJS)
-pro             float   %9.0g                 Property Crime Rate per 100,000 population (BJS)
-bur             float   %9.0g                 Burglary Crime Rate per 100,000 population (BJS)
-lar             float   %9.0g                 Larceny Crime Rate per 100,000 population (BJS)
-aut             float   %9.0g                 Motor Vehicle Crime Rate per 100,000 population (BJS)
-yradopt         byte    %9.0g                 Year of shall-issue law adoption (77=adoption prior to 1977, 0=never adopted)
-incarc_rate     int     %8.0g                 72-99 ONLY - Lagged Rate per 100,000 resident pop of sentenced prisoners in Stat
-pb1064          float   %9.0g                 percent of state population that is black, ages 10 to 64
+area            long    %9.0g                 Land Area in Sq Miles (Statistical
+                                                Abstract of the U.S.)
+vio             float   %9.0g                 Violent Crime Rate per 100,000
+                                                population (BJS)
+mur             float   %9.0g                 Murder Crime Rate per 100,000
+                                                population (BJS)
+rap             float   %9.0g                 Rape Crime Rate per 100,000
+                                                population (BJS)
+rob             float   %9.0g                 Robbery Crime Rate per 100,000
+                                                population (BJS)
+aga             float   %9.0g                 Aggravated Assault Crime Rate per
+                                                100,000 population (BJS)
+pro             float   %9.0g                 Property Crime Rate per 100,000
+                                                population (BJS)
+bur             float   %9.0g                 Burglary Crime Rate per 100,000
+                                                population (BJS)
+lar             float   %9.0g                 Larceny Crime Rate per 100,000
+                                                population (BJS)
+aut             float   %9.0g                 Motor Vehicle Crime Rate per
+                                                100,000 population (BJS)
+yradopt         byte    %9.0g                 Year of shall-issue law adoption
+                                                (77=adoption prior to 1977,
+                                                0=never adopted)
+incarc_rate     int     %8.0g                 72-99 ONLY - Lagged Rate per
+                                                100,000 resident pop of sentenced
+                                                prisoners in Stat
+pb1064          float   %9.0g                 percent of state population that is
+                                                black, ages 10 to 64
 pn1064          float   %9.0g                 
-pw1064          float   %9.0g                 percent of state population that is white, ages 10 to 64
-pm1029          float   %9.0g                 percent of state population that is male, ages 10 to 29
+pw1064          float   %9.0g                 percent of state population that is
+                                                white, ages 10 to 64
+pm1029          float   %9.0g                 percent of state population that is
+                                                male, ages 10 to 29
 pop             float   %9.0g                 
-avginc          float   %9.0g                 real per capita personal income in the state, in thousands of dollars
-density         float   %9.0g                 population per square mile of land area, divided by 1000
+avginc          float   %9.0g                 real per capita personal income in
+                                                the state, in thousands of
+                                                dollars
+density         float   %9.0g                 population per square mile of land
+                                                area, divided by 1000
 stateid         byte    %9.0g                 
 shall           byte    %9.0g                  shall
- = 1 if the state has a shall-carry law in effect in that year
+ = 1 if the state has a
+                                                shall-carry law in effect in that
+                                                year
  = 0
----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 Sorted by: 
 
 . summarize
@@ -85,16 +109,8 @@ Sorted by:
 . gen log_rob=log(rob)
 
 . 
-. * Question 1
+. * Part I
 . 
-. *reg log_vio shall, r
-. /*
-> esttab using P5Q1.tex, label nostar replace booktabs
-> reg log_mur shall, r
-> esttab using P5Q1.tex, label nostar append booktabs
-> reg log_rob shall, r
-> esttab using P5Q1.tex, label nostar append booktabs
-> */
 . eststo clear
 
 . eststo: reg log_vio shall, r
@@ -148,8 +164,737 @@ Linear regression                               Number of obs     =      1,173
 ------------------------------------------------------------------------------
 (est3 stored)
 
-. esttab using P5Q1.tex, se r2 nostar replace booktabs
-(output written to P5Q1.tex)
+. esttab using P5I.tex, se r2 nostar replace booktabs
+(output written to P5I.tex)
+
+. 
+. * Part II
+. 
+. eststo clear
+
+. eststo: reg log_vio shall incarc_rate density pop pm1029 avginc, r
+
+Linear regression                               Number of obs     =      1,173
+                                                F(6, 1166)        =     103.71
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5459
+                                                Root MSE          =     .43622
+
+------------------------------------------------------------------------------
+             |               Robust
+     log_vio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.3592537   .0328629   -10.93   0.000    -.4237307   -.2947766
+ incarc_rate |   .0018664   .0001747    10.68   0.000     .0015237    .0022091
+     density |   .0310878   .0163898     1.90   0.058     -.001069    .0632446
+         pop |   .0415065   .0031019    13.38   0.000     .0354206    .0475924
+      pm1029 |   .0379149    .009879     3.84   0.000     .0185323    .0572975
+      avginc |   .0209617   .0056076     3.74   0.000     .0099596    .0319638
+       _cons |    4.58343   .2230323    20.55   0.000     4.145841    5.021019
+------------------------------------------------------------------------------
+(est1 stored)
+
+. eststo: reg log_mur shall incarc_rate density pop pm1029 avginc, r
+
+Linear regression                               Number of obs     =      1,173
+                                                F(6, 1166)        =     129.39
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5541
+                                                Root MSE          =     .47092
+
+------------------------------------------------------------------------------
+             |               Robust
+     log_mur |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.3091196   .0366236    -8.44   0.000    -.3809751   -.2372642
+ incarc_rate |     .00259   .0001633    15.86   0.000     .0022695    .0029105
+     density |   .0545724    .013895     3.93   0.000     .0273104    .0818344
+         pop |   .0400305   .0034352    11.65   0.000     .0332906    .0467704
+      pm1029 |   .1158639   .0123836     9.36   0.000     .0915674    .1401605
+      avginc |  -.0458811    .007406    -6.20   0.000    -.0604117   -.0313506
+       _cons |  -.1747226   .2861091    -0.61   0.542    -.7360689    .3866237
+------------------------------------------------------------------------------
+(est2 stored)
+
+. eststo: reg log_rob shall incarc_rate density pop pm1029 avginc, r
+
+Linear regression                               Number of obs     =      1,173
+                                                F(6, 1166)        =     125.87
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5593
+                                                Root MSE          =     .63533
+
+------------------------------------------------------------------------------
+             |               Robust
+     log_rob |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.5550345   .0500471   -11.09   0.000    -.6532269    -.456842
+ incarc_rate |   .0016176   .0002015     8.03   0.000     .0012222     .002013
+     density |   .1235104   .0190567     6.48   0.000     .0861212    .1608997
+         pop |   .0775622   .0055295    14.03   0.000     .0667134     .088411
+      pm1029 |   .0758015   .0139382     5.44   0.000     .0484548    .1031483
+      avginc |   .0636733   .0078652     8.10   0.000     .0482419    .0791048
+       _cons |   1.943572   .3155318     6.16   0.000     1.324498    2.562646
+------------------------------------------------------------------------------
+(est3 stored)
+
+. esttab using P5II.tex, se r2 nostar replace booktabs
+(output written to P5II.tex)
+
+. 
+. 
+. 
+. * Part IV
+. 
+. tab state, gen(statedummy)
+
+               state |      Freq.     Percent        Cum.
+---------------------+-----------------------------------
+             Alabama |         23        1.96        1.96
+              Alaska |         23        1.96        3.92
+             Arizona |         23        1.96        5.88
+            Arkansas |         23        1.96        7.84
+          California |         23        1.96        9.80
+            Colorado |         23        1.96       11.76
+         Connecticut |         23        1.96       13.73
+            Delaware |         23        1.96       15.69
+District of Columbia |         23        1.96       17.65
+             Florida |         23        1.96       19.61
+             Georgia |         23        1.96       21.57
+              Hawaii |         23        1.96       23.53
+               Idaho |         23        1.96       25.49
+            Illinois |         23        1.96       27.45
+             Indiana |         23        1.96       29.41
+                Iowa |         23        1.96       31.37
+              Kansas |         23        1.96       33.33
+            Kentucky |         23        1.96       35.29
+           Louisiana |         23        1.96       37.25
+               Maine |         23        1.96       39.22
+            Maryland |         23        1.96       41.18
+       Massachusetts |         23        1.96       43.14
+            Michigan |         23        1.96       45.10
+           Minnesota |         23        1.96       47.06
+         Mississippi |         23        1.96       49.02
+            Missouri |         23        1.96       50.98
+             Montana |         23        1.96       52.94
+            Nebraska |         23        1.96       54.90
+              Nevada |         23        1.96       56.86
+       New Hampshire |         23        1.96       58.82
+          New Jersey |         23        1.96       60.78
+          New Mexico |         23        1.96       62.75
+            New York |         23        1.96       64.71
+      North Carolina |         23        1.96       66.67
+        North Dakota |         23        1.96       68.63
+                Ohio |         23        1.96       70.59
+            Oklahoma |         23        1.96       72.55
+              Oregon |         23        1.96       74.51
+        Pennyslvania |         23        1.96       76.47
+        Rhode Island |         23        1.96       78.43
+      South Carolina |         23        1.96       80.39
+        South Dakota |         23        1.96       82.35
+           Tennessee |         23        1.96       84.31
+               Texas |         23        1.96       86.27
+                Utah |         23        1.96       88.24
+             Vermont |         23        1.96       90.20
+            Virginia |         23        1.96       92.16
+          Washington |         23        1.96       94.12
+       West Virginia |         23        1.96       96.08
+           Wisconsin |         23        1.96       98.04
+             Wyoming |         23        1.96      100.00
+---------------------+-----------------------------------
+               Total |      1,173      100.00
+
+. /* column 1 in the table */
+. reg log_vio shall incarc_rate density pop pm1029 avginc, r
+
+Linear regression                               Number of obs     =      1,173
+                                                F(6, 1166)        =     103.71
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5459
+                                                Root MSE          =     .43622
+
+------------------------------------------------------------------------------
+             |               Robust
+     log_vio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.3592537   .0328629   -10.93   0.000    -.4237307   -.2947766
+ incarc_rate |   .0018664   .0001747    10.68   0.000     .0015237    .0022091
+     density |   .0310878   .0163898     1.90   0.058     -.001069    .0632446
+         pop |   .0415065   .0031019    13.38   0.000     .0354206    .0475924
+      pm1029 |   .0379149    .009879     3.84   0.000     .0185323    .0572975
+      avginc |   .0209617   .0056076     3.74   0.000     .0099596    .0319638
+       _cons |    4.58343   .2230323    20.55   0.000     4.145841    5.021019
+------------------------------------------------------------------------------
+
+. /* column 2 in the table */
+. reg log_vio shall incarc_rate density pop pm1029 avginc statedummy*, cluster(st
+> ate) r
+note: statedummy9 omitted because of collinearity
+
+Linear regression                               Number of obs     =      1,173
+                                                F(5, 50)          =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.9374
+                                                Root MSE          =     .16555
+
+                                 (Std. Err. adjusted for 51 clusters in state)
+------------------------------------------------------------------------------
+             |               Robust
+     log_vio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |   .0116671   .0401564     0.29   0.773    -.0689895    .0923236
+ incarc_rate |   .0000225   .0002429     0.09   0.927    -.0004654    .0005104
+     density |  -.0166789   .1294054    -0.13   0.898    -.2765973    .2432395
+         pop |    .002712   .0116435     0.23   0.817    -.0206747    .0260988
+      pm1029 |  -.0440949   .0188576    -2.34   0.023    -.0819715   -.0062183
+      avginc |  -.0008412   .0130121    -0.06   0.949    -.0269768    .0252944
+ statedummy1 |  -1.443389   1.407517    -1.03   0.310     -4.27047    1.383692
+ statedummy2 |  -1.260155   1.403737    -0.90   0.374    -4.079644    1.559334
+ statedummy3 |  -1.328394   1.414506    -0.94   0.352    -4.169513    1.512725
+ statedummy4 |  -1.706903   1.425888    -1.20   0.237    -4.570884    1.157078
+ statedummy5 |  -1.001011   1.557075    -0.64   0.523    -4.128489    2.126467
+ statedummy6 |   -1.54767   1.443159    -1.07   0.289    -4.446341       1.351
+ statedummy7 |  -1.731835   1.383629    -1.25   0.217    -4.510936    1.047266
+ statedummy8 |  -1.417259   1.368833    -1.04   0.305    -4.166642    1.332124
+ statedummy9 |          0  (omitted)
+statedummy10 |  -.9511485   1.464999    -0.65   0.519    -3.893686    1.991389
+statedummy11 |  -1.349457   1.416825    -0.95   0.345    -4.195234    1.496321
+statedummy12 |  -2.130275    1.41958    -1.50   0.140    -4.981584    .7210349
+statedummy13 |   -2.15073   1.433182    -1.50   0.140     -5.02936    .7279003
+statedummy14 |  -1.047659   1.467357    -0.71   0.479    -3.994934    1.899615
+statedummy15 |  -1.782497    1.44953    -1.23   0.225    -4.693964    1.128971
+statedummy16 |   -2.26687   1.453454    -1.56   0.125    -5.186219    .6524794
+statedummy17 |   -1.77155   1.436105    -1.23   0.223    -4.656051    1.112951
+statedummy18 |  -1.938738   1.428487    -1.36   0.181    -4.807939    .9304634
+statedummy19 |  -1.073194   1.386733    -0.77   0.443    -3.858529    1.712142
+statedummy20 |  -2.745701    1.46761    -1.87   0.067    -5.693483    .2020818
+statedummy21 |  -1.004609   1.375929    -0.73   0.469    -3.768243    1.759025
+statedummy22 |  -1.328791   1.389012    -0.96   0.343    -4.118704    1.461122
+statedummy23 |  -1.209194   1.435342    -0.84   0.404    -4.092163    1.673774
+statedummy24 |    -2.1314   1.475129    -1.44   0.155    -5.094284    .8314834
+statedummy25 |  -1.859255   1.404323    -1.32   0.192    -4.679921    .9614115
+statedummy26 |   -1.41175   1.439168    -0.98   0.331    -4.302403    1.478903
+statedummy27 |  -2.562306   1.445263    -1.77   0.082    -5.465203    .3405904
+statedummy28 |  -2.075576   1.450729    -1.43   0.159     -4.98945    .8382984
+statedummy29 |  -1.131526   1.398863    -0.81   0.422    -3.941225    1.678173
+statedummy30 |  -2.892905     1.4638    -1.98   0.054    -5.833034    .0472251
+statedummy31 |  -1.472679   1.353463    -1.09   0.282    -4.191189    1.245831
+statedummy32 |  -1.112507   1.429067    -0.78   0.440    -3.982874    1.757859
+statedummy33 |  -.9725061   1.481904    -0.66   0.515    -3.948997    2.003985
+statedummy34 |  -1.478916   1.420943    -1.04   0.303    -4.332965    1.375133
+statedummy35 |  -3.493014   1.457671    -2.40   0.020    -6.420833   -.5651954
+statedummy36 |  -1.678184   1.442396    -1.16   0.250    -4.575323    1.218954
+statedummy37 |   -1.56406   1.404935    -1.11   0.271    -4.385955    1.257835
+statedummy38 |  -1.572108    1.45664    -1.08   0.286    -4.497857     1.35364
+statedummy39 |  -1.865021   1.484381    -1.26   0.215    -4.846487    1.116445
+statedummy40 |  -1.824881   1.334886    -1.37   0.178    -4.506079    .8563174
+statedummy41 |  -1.040787   1.378091    -0.76   0.454    -3.808763     1.72719
+statedummy42 |  -2.700544   1.441419    -1.87   0.067     -5.59572    .1946316
+statedummy43 |  -1.423083   1.439052    -0.99   0.327    -4.313505    1.467339
+statedummy44 |  -1.334407   1.470874    -0.91   0.369    -4.288744    1.619929
+statedummy45 |  -1.996577   1.431432    -1.39   0.169    -4.871692    .8785377
+statedummy46 |  -2.861388   1.457168    -1.96   0.055    -5.788197    .0654203
+statedummy47 |  -1.948903   1.425478    -1.37   0.178     -4.81206    .9142536
+statedummy48 |  -1.653982    1.46881    -1.13   0.266    -4.604174     1.29621
+statedummy49 |  -2.550038   1.458699    -1.75   0.087     -5.47992    .3798445
+statedummy50 |  -2.340891   1.453057    -1.61   0.113    -5.259442    .5776598
+statedummy51 |  -2.050905   1.426907    -1.44   0.157    -4.916933    .8151221
+       _cons |   8.442362   1.654309     5.10   0.000     5.119586    11.76514
+------------------------------------------------------------------------------
+
+. testparm statedummy*
+
+ ( 1)  statedummy1 = 0
+ ( 2)  statedummy2 = 0
+ ( 3)  statedummy3 = 0
+ ( 4)  statedummy4 = 0
+ ( 5)  statedummy5 = 0
+ ( 6)  statedummy6 = 0
+ ( 7)  statedummy7 = 0
+ ( 8)  statedummy8 = 0
+ ( 9)  statedummy10 = 0
+ (10)  statedummy11 = 0
+ (11)  statedummy12 = 0
+ (12)  statedummy13 = 0
+ (13)  statedummy14 = 0
+ (14)  statedummy15 = 0
+ (15)  statedummy16 = 0
+ (16)  statedummy17 = 0
+ (17)  statedummy18 = 0
+ (18)  statedummy19 = 0
+ (19)  statedummy20 = 0
+ (20)  statedummy21 = 0
+ (21)  statedummy22 = 0
+ (22)  statedummy23 = 0
+ (23)  statedummy24 = 0
+ (24)  statedummy25 = 0
+ (25)  statedummy26 = 0
+ (26)  statedummy27 = 0
+ (27)  statedummy28 = 0
+ (28)  statedummy29 = 0
+ (29)  statedummy30 = 0
+ (30)  statedummy31 = 0
+ (31)  statedummy32 = 0
+ (32)  statedummy33 = 0
+ (33)  statedummy34 = 0
+ (34)  statedummy35 = 0
+ (35)  statedummy36 = 0
+ (36)  statedummy37 = 0
+ (37)  statedummy38 = 0
+ (38)  statedummy39 = 0
+ (39)  statedummy40 = 0
+ (40)  statedummy41 = 0
+ (41)  statedummy42 = 0
+ (42)  statedummy43 = 0
+ (43)  statedummy44 = 0
+ (44)  statedummy45 = 0
+ (45)  statedummy46 = 0
+ (46)  statedummy47 = 0
+ (47)  statedummy48 = 0
+ (48)  statedummy49 = 0
+ (49)  statedummy50 = 0
+ (50)  statedummy51 = 0
+       Constraint 3 dropped
+       Constraint 4 dropped
+       Constraint 6 dropped
+       Constraint 8 dropped
+       Constraint 10 dropped
+       Constraint 11 dropped
+       Constraint 12 dropped
+       Constraint 13 dropped
+       Constraint 14 dropped
+       Constraint 15 dropped
+       Constraint 16 dropped
+       Constraint 17 dropped
+       Constraint 18 dropped
+       Constraint 19 dropped
+       Constraint 20 dropped
+       Constraint 21 dropped
+       Constraint 22 dropped
+       Constraint 23 dropped
+       Constraint 24 dropped
+       Constraint 25 dropped
+       Constraint 26 dropped
+       Constraint 27 dropped
+       Constraint 28 dropped
+       Constraint 29 dropped
+       Constraint 30 dropped
+       Constraint 31 dropped
+       Constraint 32 dropped
+       Constraint 33 dropped
+       Constraint 34 dropped
+       Constraint 35 dropped
+       Constraint 36 dropped
+       Constraint 37 dropped
+       Constraint 38 dropped
+       Constraint 39 dropped
+       Constraint 40 dropped
+       Constraint 41 dropped
+       Constraint 42 dropped
+       Constraint 43 dropped
+       Constraint 44 dropped
+       Constraint 46 dropped
+       Constraint 47 dropped
+       Constraint 48 dropped
+       Constraint 49 dropped
+       Constraint 50 dropped
+
+       F(  6,    50) =65258.90
+            Prob > F =    0.0000
+
+. 
+. reg log_mur shall incarc_rate density pop pm1029 avginc, r
+
+Linear regression                               Number of obs     =      1,173
+                                                F(6, 1166)        =     129.39
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5541
+                                                Root MSE          =     .47092
+
+------------------------------------------------------------------------------
+             |               Robust
+     log_mur |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.3091196   .0366236    -8.44   0.000    -.3809751   -.2372642
+ incarc_rate |     .00259   .0001633    15.86   0.000     .0022695    .0029105
+     density |   .0545724    .013895     3.93   0.000     .0273104    .0818344
+         pop |   .0400305   .0034352    11.65   0.000     .0332906    .0467704
+      pm1029 |   .1158639   .0123836     9.36   0.000     .0915674    .1401605
+      avginc |  -.0458811    .007406    -6.20   0.000    -.0604117   -.0313506
+       _cons |  -.1747226   .2861091    -0.61   0.542    -.7360689    .3866237
+------------------------------------------------------------------------------
+
+. reg log_mur shall incarc_rate density pop pm1029 avginc statedummy*, cluster(st
+> ate) r
+note: statedummy9 omitted because of collinearity
+
+Linear regression                               Number of obs     =      1,173
+                                                F(5, 50)          =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.9073
+                                                Root MSE          =     .21949
+
+                                 (Std. Err. adjusted for 51 clusters in state)
+------------------------------------------------------------------------------
+             |               Robust
+     log_mur |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |   -.046103   .0370413    -1.24   0.219    -.1205026    .0282966
+ incarc_rate |  -.0003328   .0003663    -0.91   0.368    -.0010686    .0004029
+     density |  -.6183979   .2180464    -2.84   0.007    -1.056357   -.1804387
+         pop |  -.0273718   .0217085    -1.26   0.213    -.0709746    .0162311
+      pm1029 |   .0405053   .0222481     1.82   0.075    -.0041813    .0851918
+      avginc |   .0267969   .0142193     1.88   0.065    -.0017634    .0553572
+ statedummy1 |  -7.382917   2.407237    -3.07   0.003    -12.21799    -2.54784
+ statedummy2 |  -7.915656   2.349537    -3.37   0.001    -12.63484   -3.196472
+ statedummy3 |   -7.70045   2.407172    -3.20   0.002     -12.5354   -2.865504
+ statedummy4 |  -7.617474   2.430741    -3.13   0.003    -12.49976   -2.735187
+ statedummy5 |  -6.821934   2.707709    -2.52   0.015    -12.26053    -1.38334
+ statedummy6 |  -8.216437   2.439307    -3.37   0.001    -13.11593   -3.316945
+ statedummy7 |  -8.064434   2.310706    -3.49   0.001    -12.70562   -3.423245
+ statedummy8 |  -8.241946   2.305512    -3.57   0.001     -12.8727   -3.611189
+ statedummy9 |          0  (omitted)
+statedummy10 |  -7.114847   2.507053    -2.84   0.007    -12.15041   -2.079282
+statedummy11 |  -7.308936   2.419114    -3.02   0.004    -12.16787   -2.450002
+statedummy12 |  -8.496093    2.38829    -3.56   0.001    -13.29311   -3.699072
+statedummy13 |  -8.745896   2.432082    -3.60   0.001    -13.63088   -3.860916
+statedummy14 |  -7.338386   2.503492    -2.93   0.005     -12.3668   -2.309974
+statedummy15 |  -7.776941    2.46015    -3.16   0.003     -12.7183   -2.835584
+statedummy16 |  -9.204187   2.463504    -3.74   0.000    -14.15228   -4.256093
+statedummy17 |  -8.221271    2.43275    -3.38   0.001    -13.10759   -3.334949
+statedummy18 |  -7.822704   2.436844    -3.21   0.002    -12.71725   -2.928159
+statedummy19 |  -7.029074   2.372429    -2.96   0.005    -11.79424    -2.26391
+statedummy20 |  -9.092835   2.478077    -3.67   0.001     -14.0702   -4.115472
+statedummy21 |  -7.309367   2.324246    -3.14   0.003    -11.97775   -2.640981
+statedummy22 |  -8.264912   2.342755    -3.53   0.001    -12.97047    -3.55935
+statedummy23 |  -7.382408   2.453396    -3.01   0.004     -12.3102   -2.454617
+statedummy24 |  -8.966876   2.493055    -3.60   0.001    -13.97432   -3.959427
+statedummy25 |  -7.325304   2.402804    -3.05   0.004    -12.15148    -2.49913
+statedummy26 |  -7.580292   2.449171    -3.10   0.003     -12.4996   -2.660986
+statedummy27 |  -8.599791   2.449054    -3.51   0.001    -13.51886   -3.680721
+statedummy28 |  -8.795765   2.453377    -3.59   0.001    -13.72352   -3.868013
+statedummy29 |  -7.461452   2.358265    -3.16   0.003    -12.19817   -2.724737
+statedummy30 |   -9.20885   2.452455    -3.75   0.000    -14.13475   -4.282949
+statedummy31 |  -7.561099   2.284042    -3.31   0.002    -12.14873   -2.973466
+statedummy32 |  -7.618693   2.432257    -3.13   0.003    -12.50402   -2.733362
+statedummy33 |  -6.984843   2.542462    -2.75   0.008    -12.09153   -1.878159
+statedummy34 |  -7.474285   2.429378    -3.08   0.003    -12.35383   -2.594735
+statedummy35 |  -9.860616   2.464615    -4.00   0.000    -14.81094    -4.91029
+statedummy36 |  -7.751659   2.471056    -3.14   0.003    -12.71492   -2.788397
+statedummy37 |  -7.732302   2.394312    -3.23   0.002    -12.54142   -2.923184
+statedummy38 |  -8.368801   2.463269    -3.40   0.001    -13.31642    -3.42118
+statedummy39 |  -7.737235    2.53448    -3.05   0.004    -12.82789   -2.646581
+statedummy40 |  -8.163528   2.249584    -3.63   0.001    -12.68195   -3.645106
+statedummy41 |  -7.480825   2.358215    -3.17   0.003    -12.21744    -2.74421
+statedummy42 |  -9.353925   2.439596    -3.83   0.000      -14.254   -4.453852
+statedummy43 |  -7.493738   2.451699    -3.06   0.004    -12.41812   -2.569356
+statedummy44 |  -7.010561   2.544684    -2.75   0.008    -12.12171   -1.899412
+statedummy45 |  -8.837278   2.432563    -3.63   0.001    -13.72322   -3.951331
+statedummy46 |   -9.10774   2.454729    -3.71   0.001    -14.03821   -4.177272
+statedummy47 |  -7.715268   2.420665    -3.19   0.002    -12.57732   -2.853219
+statedummy48 |  -8.272544   2.477819    -3.34   0.002    -13.24939   -3.295697
+statedummy49 |  -8.145887   2.477015    -3.29   0.002    -13.12112   -3.170656
+statedummy50 |  -8.595801   2.467262    -3.48   0.001    -13.55144    -3.64016
+statedummy51 |  -8.589925   2.408908    -3.57   0.001    -13.42836    -3.75149
+       _cons |   9.059616   2.796235     3.24   0.002     3.443212    14.67602
+------------------------------------------------------------------------------
+
+. testparm statedummy*
+
+ ( 1)  statedummy1 = 0
+ ( 2)  statedummy2 = 0
+ ( 3)  statedummy3 = 0
+ ( 4)  statedummy4 = 0
+ ( 5)  statedummy5 = 0
+ ( 6)  statedummy6 = 0
+ ( 7)  statedummy7 = 0
+ ( 8)  statedummy8 = 0
+ ( 9)  statedummy10 = 0
+ (10)  statedummy11 = 0
+ (11)  statedummy12 = 0
+ (12)  statedummy13 = 0
+ (13)  statedummy14 = 0
+ (14)  statedummy15 = 0
+ (15)  statedummy16 = 0
+ (16)  statedummy17 = 0
+ (17)  statedummy18 = 0
+ (18)  statedummy19 = 0
+ (19)  statedummy20 = 0
+ (20)  statedummy21 = 0
+ (21)  statedummy22 = 0
+ (22)  statedummy23 = 0
+ (23)  statedummy24 = 0
+ (24)  statedummy25 = 0
+ (25)  statedummy26 = 0
+ (26)  statedummy27 = 0
+ (27)  statedummy28 = 0
+ (28)  statedummy29 = 0
+ (29)  statedummy30 = 0
+ (30)  statedummy31 = 0
+ (31)  statedummy32 = 0
+ (32)  statedummy33 = 0
+ (33)  statedummy34 = 0
+ (34)  statedummy35 = 0
+ (35)  statedummy36 = 0
+ (36)  statedummy37 = 0
+ (37)  statedummy38 = 0
+ (38)  statedummy39 = 0
+ (39)  statedummy40 = 0
+ (40)  statedummy41 = 0
+ (41)  statedummy42 = 0
+ (42)  statedummy43 = 0
+ (43)  statedummy44 = 0
+ (44)  statedummy45 = 0
+ (45)  statedummy46 = 0
+ (46)  statedummy47 = 0
+ (47)  statedummy48 = 0
+ (48)  statedummy49 = 0
+ (49)  statedummy50 = 0
+ (50)  statedummy51 = 0
+       Constraint 3 dropped
+       Constraint 4 dropped
+       Constraint 6 dropped
+       Constraint 8 dropped
+       Constraint 10 dropped
+       Constraint 11 dropped
+       Constraint 12 dropped
+       Constraint 13 dropped
+       Constraint 14 dropped
+       Constraint 15 dropped
+       Constraint 16 dropped
+       Constraint 17 dropped
+       Constraint 18 dropped
+       Constraint 19 dropped
+       Constraint 20 dropped
+       Constraint 21 dropped
+       Constraint 22 dropped
+       Constraint 23 dropped
+       Constraint 24 dropped
+       Constraint 25 dropped
+       Constraint 26 dropped
+       Constraint 27 dropped
+       Constraint 28 dropped
+       Constraint 29 dropped
+       Constraint 30 dropped
+       Constraint 31 dropped
+       Constraint 32 dropped
+       Constraint 33 dropped
+       Constraint 34 dropped
+       Constraint 35 dropped
+       Constraint 36 dropped
+       Constraint 37 dropped
+       Constraint 38 dropped
+       Constraint 39 dropped
+       Constraint 40 dropped
+       Constraint 41 dropped
+       Constraint 42 dropped
+       Constraint 43 dropped
+       Constraint 44 dropped
+       Constraint 46 dropped
+       Constraint 47 dropped
+       Constraint 48 dropped
+       Constraint 49 dropped
+       Constraint 50 dropped
+
+       F(  6,    50) =20856.74
+            Prob > F =    0.0000
+
+. 
+. reg log_rob shall incarc_rate density pop pm1029 avginc, r
+
+Linear regression                               Number of obs     =      1,173
+                                                F(6, 1166)        =     125.87
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5593
+                                                Root MSE          =     .63533
+
+------------------------------------------------------------------------------
+             |               Robust
+     log_rob |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.5550345   .0500471   -11.09   0.000    -.6532269    -.456842
+ incarc_rate |   .0016176   .0002015     8.03   0.000     .0012222     .002013
+     density |   .1235104   .0190567     6.48   0.000     .0861212    .1608997
+         pop |   .0775622   .0055295    14.03   0.000     .0667134     .088411
+      pm1029 |   .0758015   .0139382     5.44   0.000     .0484548    .1031483
+      avginc |   .0636733   .0078652     8.10   0.000     .0482419    .0791048
+       _cons |   1.943572   .3155318     6.16   0.000     1.324498    2.562646
+------------------------------------------------------------------------------
+
+. reg log_rob shall incarc_rate density pop pm1029 avginc statedummy*, cluster(st
+> ate) r
+note: statedummy9 omitted because of collinearity
+
+Linear regression                               Number of obs     =      1,173
+                                                F(5, 50)          =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.9506
+                                                Root MSE          =     .21745
+
+                                 (Std. Err. adjusted for 51 clusters in state)
+------------------------------------------------------------------------------
+             |               Robust
+     log_rob |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |   .0315176   .0518433     0.61   0.546    -.0726126    .1356479
+ incarc_rate |     .00002   .0003344     0.06   0.952    -.0006517    .0006917
+     density |   .0436203   .1780087     0.25   0.807    -.3139207    .4011613
+         pop |    .015937   .0234064     0.68   0.499    -.0310761    .0629501
+      pm1029 |   .0124203   .0269028     0.46   0.646    -.0416156    .0664562
+      avginc |  -.0083454   .0205227    -0.41   0.686    -.0495666    .0328757
+ statedummy1 |  -1.779452    1.94186    -0.92   0.364    -5.679792    2.120888
+ statedummy2 |  -1.948782   1.929447    -1.01   0.317    -5.824191    1.926627
+ statedummy3 |  -1.563884   1.947207    -0.80   0.426    -5.474963    2.347196
+ statedummy4 |   -2.07695    1.95629    -1.06   0.293    -6.006273    1.852374
+ statedummy5 |  -1.211361   2.277476    -0.53   0.597    -5.785806    3.363084
+ statedummy6 |  -1.836805   1.991782    -0.92   0.361    -5.837417    2.163807
+ statedummy7 |  -1.354464   1.911398    -0.71   0.482    -5.193621    2.484693
+ statedummy8 |  -1.542806   1.879166    -0.82   0.416    -5.317222     2.23161
+ statedummy9 |          0  (omitted)
+statedummy10 |  -1.014829   2.047537    -0.50   0.622    -5.127428    3.097771
+statedummy11 |  -1.383913   1.958806    -0.71   0.483     -5.31829    2.550465
+statedummy12 |  -1.807752   1.952094    -0.93   0.359    -5.728649    2.113144
+statedummy13 |  -3.402728   1.959542    -1.74   0.089    -7.338583    .5331284
+statedummy14 |  -.9413249    2.06124    -0.46   0.650    -5.081448    3.198798
+statedummy15 |  -1.952214   1.989911    -0.98   0.331    -5.949067    2.044639
+statedummy16 |  -2.801983   2.001019    -1.40   0.168    -6.821148    1.217183
+statedummy17 |  -2.006838   1.976931    -1.02   0.315     -5.97762    1.963944
+statedummy18 |  -2.187857   1.967398    -1.11   0.271    -6.139493    1.763779
+statedummy19 |  -1.273995   1.909536    -0.67   0.508    -5.109411    2.561422
+statedummy20 |  -3.336773   1.999417    -1.67   0.101    -7.352721    .6791753
+statedummy21 |  -.7684369   1.904992    -0.40   0.688    -4.594727    3.057853
+statedummy22 |  -1.488541   1.928584    -0.77   0.444    -5.362216    2.385133
+statedummy23 |  -1.264953   2.005754    -0.63   0.531    -5.293628    2.763722
+statedummy24 |    -2.0265   2.038821    -0.99   0.325    -6.121593    2.068593
+statedummy25 |  -2.146596    1.92475    -1.12   0.270     -6.01257    1.719377
+statedummy26 |   -1.39982   1.990396    -0.70   0.485    -5.397649    2.598009
+statedummy27 |  -3.303532   1.975028    -1.67   0.101    -7.270492    .6634291
+statedummy28 |  -2.465383    1.99298    -1.24   0.222    -6.468402    1.537636
+statedummy29 |  -.7995503   1.919267    -0.42   0.679    -4.654512    3.055412
+statedummy30 |  -3.288416   1.992559    -1.65   0.105    -7.290589    .7137563
+statedummy31 |  -1.133502   1.887348    -0.60   0.551    -4.924351    2.657348
+statedummy32 |  -1.726909   1.962236    -0.88   0.383    -5.668176    2.214357
+statedummy33 |  -.6286651    2.11395    -0.30   0.767    -4.874659    3.617329
+statedummy34 |  -1.935586   1.969216    -0.98   0.330    -5.890873    2.019701
+statedummy35 |   -4.38852   1.988849    -2.21   0.032    -8.383241   -.3938002
+statedummy36 |  -1.573856   2.021472    -0.78   0.440    -5.634101    2.486389
+statedummy37 |  -1.919282   1.932621    -0.99   0.325    -5.801066    1.962502
+statedummy38 |  -1.606251   1.998312    -0.80   0.425    -5.619979    2.407477
+statedummy39 |  -1.643945   2.075641    -0.79   0.432    -5.812992    2.525101
+statedummy40 |  -1.965644   1.831953    -1.07   0.288    -5.645229    1.713942
+statedummy41 |  -1.754163   1.897904    -0.92   0.360    -5.566215    2.057889
+statedummy42 |  -3.769423   1.965609    -1.92   0.061    -7.717465    .1786196
+statedummy43 |  -1.420963   1.985038    -0.72   0.477    -5.408029    2.566102
+statedummy44 |  -1.543903   2.088885    -0.74   0.463    -5.739551    2.651745
+statedummy45 |  -2.485651   1.959112    -1.27   0.210    -6.420643    1.449341
+statedummy46 |  -3.773542   1.980206    -1.91   0.062    -7.750902    .2038179
+statedummy47 |  -1.900184   1.975577    -0.96   0.341    -5.868247     2.06788
+statedummy48 |  -1.799592   2.014455    -0.89   0.376    -5.845744     2.24656
+statedummy49 |  -2.878042   1.994441    -1.44   0.155    -6.883994    1.127911
+statedummy50 |  -2.237375   2.009825    -1.11   0.271    -6.274227    1.799477
+statedummy51 |  -3.435489    1.95429    -1.76   0.085    -7.360797    .4898187
+       _cons |   6.454419   2.251821     2.87   0.006     1.931504    10.97733
+------------------------------------------------------------------------------
+
+. testparm statedummy*
+
+ ( 1)  statedummy1 = 0
+ ( 2)  statedummy2 = 0
+ ( 3)  statedummy3 = 0
+ ( 4)  statedummy4 = 0
+ ( 5)  statedummy5 = 0
+ ( 6)  statedummy6 = 0
+ ( 7)  statedummy7 = 0
+ ( 8)  statedummy8 = 0
+ ( 9)  statedummy10 = 0
+ (10)  statedummy11 = 0
+ (11)  statedummy12 = 0
+ (12)  statedummy13 = 0
+ (13)  statedummy14 = 0
+ (14)  statedummy15 = 0
+ (15)  statedummy16 = 0
+ (16)  statedummy17 = 0
+ (17)  statedummy18 = 0
+ (18)  statedummy19 = 0
+ (19)  statedummy20 = 0
+ (20)  statedummy21 = 0
+ (21)  statedummy22 = 0
+ (22)  statedummy23 = 0
+ (23)  statedummy24 = 0
+ (24)  statedummy25 = 0
+ (25)  statedummy26 = 0
+ (26)  statedummy27 = 0
+ (27)  statedummy28 = 0
+ (28)  statedummy29 = 0
+ (29)  statedummy30 = 0
+ (30)  statedummy31 = 0
+ (31)  statedummy32 = 0
+ (32)  statedummy33 = 0
+ (33)  statedummy34 = 0
+ (34)  statedummy35 = 0
+ (35)  statedummy36 = 0
+ (36)  statedummy37 = 0
+ (37)  statedummy38 = 0
+ (38)  statedummy39 = 0
+ (39)  statedummy40 = 0
+ (40)  statedummy41 = 0
+ (41)  statedummy42 = 0
+ (42)  statedummy43 = 0
+ (43)  statedummy44 = 0
+ (44)  statedummy45 = 0
+ (45)  statedummy46 = 0
+ (46)  statedummy47 = 0
+ (47)  statedummy48 = 0
+ (48)  statedummy49 = 0
+ (49)  statedummy50 = 0
+ (50)  statedummy51 = 0
+       Constraint 3 dropped
+       Constraint 4 dropped
+       Constraint 6 dropped
+       Constraint 8 dropped
+       Constraint 10 dropped
+       Constraint 11 dropped
+       Constraint 12 dropped
+       Constraint 13 dropped
+       Constraint 14 dropped
+       Constraint 15 dropped
+       Constraint 16 dropped
+       Constraint 17 dropped
+       Constraint 18 dropped
+       Constraint 19 dropped
+       Constraint 20 dropped
+       Constraint 21 dropped
+       Constraint 22 dropped
+       Constraint 23 dropped
+       Constraint 24 dropped
+       Constraint 25 dropped
+       Constraint 26 dropped
+       Constraint 27 dropped
+       Constraint 28 dropped
+       Constraint 29 dropped
+       Constraint 30 dropped
+       Constraint 31 dropped
+       Constraint 32 dropped
+       Constraint 33 dropped
+       Constraint 34 dropped
+       Constraint 35 dropped
+       Constraint 36 dropped
+       Constraint 37 dropped
+       Constraint 38 dropped
+       Constraint 39 dropped
+       Constraint 40 dropped
+       Constraint 41 dropped
+       Constraint 42 dropped
+       Constraint 43 dropped
+       Constraint 44 dropped
+       Constraint 46 dropped
+       Constraint 47 dropped
+       Constraint 48 dropped
+       Constraint 49 dropped
+       Constraint 50 dropped
+
+       F(  6,    50) =14779.55
+            Prob > F =    0.0000
 
 . 
 end of do-file
