@@ -1,8 +1,5 @@
 clear
-*set more off;
-*set matsize 300;
 capture log close
-/* ps3 example using handguns data */
 log using shall.log, replace
 use handguns.dta
 desc
@@ -33,10 +30,13 @@ tab state, gen(statedummy)
 /* column 1 in the table */
 reg log_vio shall incarc_rate density pop pm1029 avginc, r
 /* column 2 in the table */
-reg log_vio shall incarc_rate density pop pm1029 avginc statedummy*, r
+reg log_vio shall incarc_rate density pop pm1029 avginc statedummy*, cluster(state) r
 testparm statedummy*
-/* if you want to compute standard error that is robust to the time series
-correlation in uit, you can u se the following commands. */
-reg log_vio shall incarc_rate density pop pm1029 avginc statedummy*,cluster(state) r
-/* you can also use xtreg here */
-*Dep=ln(violence)
+
+reg log_mur shall incarc_rate density pop pm1029 avginc, r
+reg log_mur shall incarc_rate density pop pm1029 avginc statedummy*, cluster(state) r
+testparm statedummy*
+
+reg log_rob shall incarc_rate density pop pm1029 avginc, r
+reg log_rob shall incarc_rate density pop pm1029 avginc statedummy*, cluster(state) r
+testparm statedummy*
