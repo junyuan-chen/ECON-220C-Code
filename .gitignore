@@ -1,6 +1,6 @@
 ## Folders to be ignored:
-**/Figure
-**/Figures
+Figure/
+Figures/
 
 *.html
 .ipynb_checkpoints
