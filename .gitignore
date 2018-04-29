@@ -3,6 +3,8 @@ Figure/
 Figures/
 
 *.html
+
+*.ipynb
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
