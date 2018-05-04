@@ -1,17 +1,22 @@
 mutable struct Estimates{TF<:AbstractFloat, TI<:Int}
     nReplic::TI
-    ρ_OLS::Array{TF,1}
-    ρ_FE::Array{TF}
-    ρ_FD::Array{TF}
-    ρ_AH::Array{TF}
+    nPara::TI
+    vPara::Array{TF,1}
+    mρ::Array{TF,2}
+    vBias::Array{TF,1}
+    vSE::Array{TF,1}
+    vRMSE::Array{TF,1}
 end
 
-function Estimates(nReplic::Int)
-    ρ_OLS = zeros(nReplic)
-    ρ_FE = zeros(nReplic)
-    ρ_FD = zeros(nReplic)
-    ρ_AH = zeros(nReplic)
-    return Estimates(nReplic, ρ_OLS, ρ_FE, ρ_FD, ρ_AH)
+function Estimates(; nReplic::Int = 1000,
+    vPara = collect(0:0.1:1))
+
+    nPara = length(vPara)
+    mρ = zeros(nReplic, nPara)
+    vBias = zeros(nPara)
+    vSE = zeros(nPara)
+    vRMSE = zeros(nPara)
+    return Estimates(nReplic, nPara, vPara, mρ, vBias, vSE, vRMSE)
 end
 
 mutable struct Data{TF<:AbstractFloat, TI<:Int}
@@ -64,19 +69,21 @@ function anderson_hsiao(D::Data)
 end
 
 
-function simulate(Est::Estimates, N::Int, T::Int, ρ::AbstractFloat)
-    for i = 1:Est.nReplic
-        D = Data(N,T)
-        gen_data!(D, ρ)
-        Est.ρ_OLS[i] = pooling_OLS(D)
-        Est.ρ_FE[i] = fixed_effects(D)
-        Est.ρ_FD[i] = first_difference(D)
-        Est.ρ_AH[i] = anderson_hsiao(D)
+function simulate(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, N::Int, T::Int)
+    for (i, ρ) in enumerate(OLS.vPara)
+        for n = 1:OLS.nReplic
+            D = Data(N,T)
+            gen_data!(D, ρ)
+            OLS.mρ[n,i] = pooling_OLS(D)
+            FE.mρ[n,i] = fixed_effects(D)
+            FD.mρ[n,i] = first_difference(D)
+            AH.mρ[n,i] = anderson_hsiao(D)
+        end
     end
 end
 
-N = 1000
-Est1 = Estimates(N)
+
+OLSa, FEa, FDa, AHa = Estimates(), Estimates(), Estimates(), Estimates()
 
 srand(10)
-@time simulate(Est1, 100, 6, 0.1)
+@time simulate(OLSa, FEa, FDa, AHa, 100, 6)
