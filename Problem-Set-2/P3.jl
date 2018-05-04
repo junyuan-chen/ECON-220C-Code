@@ -68,8 +68,16 @@ function anderson_hsiao(D::Data)
     return dot(vZ, vY)/dot(vZ, vY_lag)
 end
 
+function bias(vEst::Array, para::AbstractFloat)
+    return mean(vEst) - para
+end
 
-function simulate(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, N::Int, T::Int)
+function se(vEst::Array)
+    Avg = mean(vEst)
+    return sqrt(mean(vEst.^2) - Avg^2)
+end
+
+function simulate!(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, N::Int, T::Int)
     for (i, ρ) in enumerate(OLS.vPara)
         for n = 1:OLS.nReplic
             D = Data(N,T)
@@ -79,6 +87,11 @@ function simulate(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, N
             FD.mρ[n,i] = first_difference(D)
             AH.mρ[n,i] = anderson_hsiao(D)
         end
+        for Est in [OLS, FE, FD, AH]
+            Est.vBias[i] = bias(Est.mρ[:,i], ρ)
+            Est.vSE[i] =  se(Est.mρ[:,i])
+            Est.vRMSE[i] = sqrt(Est.vBias[i]^2 + Est.vSE[i]^2)
+        end
     end
 end
 
@@ -86,4 +99,4 @@ end
 OLSa, FEa, FDa, AHa = Estimates(), Estimates(), Estimates(), Estimates()
 
 srand(10)
-@time simulate(OLSa, FEa, FDa, AHa, 100, 6)
+@time simulate!(OLSa, FEa, FDa, AHa, 100, 6)
