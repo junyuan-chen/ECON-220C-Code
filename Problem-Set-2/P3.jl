@@ -48,6 +48,21 @@ function fixed_effects(D::Data)
     return (vY\vY_lag)[1]
 end
 
+function first_difference(D::Data)
+    mY = D.mY[:, 2:D.T+1] .- D.mY[:, 1:D.T]
+    vY = (mY[:, 2:D.T])[:]
+    vY_lag = (mY[:, 1:D.T-1])[:]
+    return (vY\vY_lag)[1]
+end
+
+function anderson_hsiao(D::Data)
+    mY = D.mY[:, 2:D.T+1] .- D.mY[:, 1:D.T]
+    vY = (mY[:, 2:D.T])[:]
+    vY_lag = (mY[:, 1:D.T-1])[:]
+    vZ = D.mY[:, 1:D.T-1]
+    return dot(vZ, vY)/dot(vZ, vY_lag)
+end
+
 
 function simulate(Est::Estimates, N::Int, T::Int, ρ::AbstractFloat)
     for i = 1:Est.nReplic
@@ -55,6 +70,8 @@ function simulate(Est::Estimates, N::Int, T::Int, ρ::AbstractFloat)
         gen_data!(D, ρ)
         Est.ρ_OLS[i] = pooling_OLS(D)
         Est.ρ_FE[i] = fixed_effects(D)
+        Est.ρ_FD[i] = first_difference(D)
+        Est.ρ_AH[i] = anderson_hsiao(D)
     end
 end
 
@@ -62,4 +79,4 @@ N = 1000
 Est1 = Estimates(N)
 
 srand(10)
-simulate(Est1, 100, 6, 0.1)
+@time simulate(Est1, 100, 6, 0.1)
