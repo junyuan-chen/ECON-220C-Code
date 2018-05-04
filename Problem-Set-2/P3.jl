@@ -41,22 +41,25 @@ function pooling_OLS(D::Data)
     return (vY\vY_lag)[1]
 end
 
-#=
-function simulate!(Est::Estimates, N::Int, T::Int)
+function fixed_effects(D::Data)
+    mY = D.mY .- mean(D.mY, 2)
+    vY = (mY[:, 2:D.T+1])[:]
+    vY_lag = (mY[:, 1:D.T])[:]
+    return (vY\vY_lag)[1]
+end
+
+
+function simulate(Est::Estimates, N::Int, T::Int, ρ::AbstractFloat)
     for i = 1:Est.nReplic
         D = Data(N,T)
-        gen_data!(D)
+        gen_data!(D, ρ)
         Est.ρ_OLS[i] = pooling_OLS(D)
+        Est.ρ_FE[i] = fixed_effects(D)
     end
 end
-=#
 
-function simulate(ρ_OLS::AbstractFloat, N::Int, T::Int, ρ::AbstractFloat)
-    D = Data(N,T)
-    gen_data!(D, ρ)
-    return pooling_OLS(D)
-end
+N = 1000
+Est1 = Estimates(N)
 
-
-Est1 = Estimates(1000)
-@time Est1.ρ_OLS .= simulate.(Est1.ρ_OLS, 100, 6, 0.1)
+srand(10)
+simulate(Est1, 100, 6, 0.1)
