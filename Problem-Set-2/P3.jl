@@ -1,17 +1,27 @@
+using PyPlot
+rc("font", size=9)
+using LaTeXStrings
+using Distributions
+
 mutable struct Estimates{TF<:AbstractFloat, TI<:Int}
     nReplic::TI
-    ρ_OLS::Array{TF,1}
-    ρ_FE::Array{TF}
-    ρ_FD::Array{TF}
-    ρ_AH::Array{TF}
+    nPara::TI
+    vPara::Array{TF,1}
+    mρ::Array{TF,2}
+    vBias::Array{TF,1}
+    vSE::Array{TF,1}
+    vRMSE::Array{TF,1}
 end
 
-function Estimates(nReplic::Int)
-    ρ_OLS = zeros(nReplic)
-    ρ_FE = zeros(nReplic)
-    ρ_FD = zeros(nReplic)
-    ρ_AH = zeros(nReplic)
-    return Estimates(nReplic, ρ_OLS, ρ_FE, ρ_FD, ρ_AH)
+function Estimates(; nReplic::Int = 1000,
+    vPara = collect(0:0.1:1))
+
+    nPara = length(vPara)
+    mρ = zeros(nReplic, nPara)
+    vBias = zeros(nPara)
+    vSE = zeros(nPara)
+    vRMSE = zeros(nPara)
+    return Estimates(nReplic, nPara, vPara, mρ, vBias, vSE, vRMSE)
 end
 
 mutable struct Data{TF<:AbstractFloat, TI<:Int}
@@ -63,20 +73,85 @@ function anderson_hsiao(D::Data)
     return dot(vZ, vY)/dot(vZ, vY_lag)
 end
 
+function bias(vEst::Array, para::AbstractFloat)
+    return mean(vEst) - para
+end
 
-function simulate(Est::Estimates, N::Int, T::Int, ρ::AbstractFloat)
-    for i = 1:Est.nReplic
-        D = Data(N,T)
-        gen_data!(D, ρ)
-        Est.ρ_OLS[i] = pooling_OLS(D)
-        Est.ρ_FE[i] = fixed_effects(D)
-        Est.ρ_FD[i] = first_difference(D)
-        Est.ρ_AH[i] = anderson_hsiao(D)
+function se(vEst::Array)
+    Avg = mean(vEst)
+    return sqrt(mean(vEst.^2) - Avg^2)
+end
+
+function simulate!(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, N::Int, T::Int)
+    for (i, ρ) in enumerate(OLS.vPara)
+        for n = 1:OLS.nReplic
+            D = Data(N,T)
+            gen_data!(D, ρ)
+            OLS.mρ[n,i] = pooling_OLS(D)
+            FE.mρ[n,i] = fixed_effects(D)
+            FD.mρ[n,i] = first_difference(D)
+            AH.mρ[n,i] = anderson_hsiao(D)
+        end
+        for Est in [OLS, FE, FD, AH]
+            Est.vBias[i] = bias(Est.mρ[:,i], ρ)
+            Est.vSE[i] =  se(Est.mρ[:,i])
+            Est.vRMSE[i] = sqrt(Est.vBias[i]^2 + Est.vSE[i]^2)
+        end
     end
 end
 
-N = 1000
-Est1 = Estimates(N)
+function plot_stat(stats::Array, labels::Array; fname::String = "no_name")
+    matplotlib[:style][:use]("seaborn-whitegrid")
+    fig, ax = subplots(figsize=(2.2, 4))
+    for (i, stat) in enumerate(stats)
+        ax[:plot](0:0.1:1, stat, marker=".", linewidth = 1, label = labels[i])
+    end
+    xlabel(L"$\rho$")
+    ax[:legend](loc = "best", frameon = true)
+    tight_layout(pad = 0.1)
+    savefig(string("Figure/", fname, ".pdf"))
+    close(fig)
+end
 
-srand(10)
-@time simulate(Est1, 100, 6, 0.1)
+function plot_est(est::Array, lab::String; fname::String = "no_name")
+    matplotlib[:style][:use]("seaborn-whitegrid")
+    fig, ax = subplots(figsize=(3.2, 3))
+    ax[:hist](est, bins = 20, alpha = 0.8, density = true, label = lab)
+    xlims = ax[:get_xlim]()
+    rang = collect(linspace(xlims[1], xlims[2], 100))
+    d = Normal(mean(est), std(est))
+    ax[:plot](rang, pdf.(d,rang))
+    ax[:legend](loc = "best", frameon = true)
+    tight_layout(pad = 0.1)
+    savefig(string("Figure/", fname, ".pdf"))
+    close(fig)
+end
+
+OLSa, FEa, FDa, AHa = Estimates(), Estimates(), Estimates(), Estimates()
+OLSb3, FEb3, FDb3, AHb3 = Estimates(), Estimates(), Estimates(), Estimates()
+OLSb9, FEb9, FDb9, AHb9 = Estimates(), Estimates(), Estimates(), Estimates()
+
+OLS = [OLSa, OLSb3, OLSb9]
+FE = [FEa, FEb3, FEb9]
+FD = [FDa, FDb3, FDb9]
+AH = [AHa, AHb3, AHb9]
+T = [6, 3, 9]
+fnames_bias = ["3a_bias", "3b3_bias", "3b9_bias"]
+fnames_se = ["3a_se", "3b3_se", "3b9_se"]
+fnames_rmse = ["3a_rmse", "3b3_rmse", "3b9_rmse"]
+fnames_hist_OLS = ["3a_OLS", "3b3_OLS", "3b9_OLS"]
+fnames_hist_FE = ["3a_FE", "3b3_FE", "3b9_FE"]
+fnames_hist_FD = ["3a_FD", "3b3_FD", "3b9_FD"]
+fnames_hist_AH = ["3a_AH", "3b3_AH", "3b9_AH"]
+
+for i = 1:length(OLS)
+    srand(10)
+    @time simulate!(OLS[i], FE[i], FD[i], AH[i], 100, T[i])
+    plot_stat([OLS[i].vBias, FE[i].vBias, FD[i].vBias, AH[i].vBias], ["OLS", "FE", "FD", "AH"]; fname = fnames_bias[i])
+    plot_stat([OLS[i].vSE, FE[i].vSE, FD[i].vSE, AH[i].vSE], ["OLS", "FE", "FD", "AH"]; fname = fnames_se[i])
+    plot_stat([OLS[i].vRMSE, FE[i].vRMSE, FD[i].vRMSE, AH[i].vRMSE], ["OLS", "FE", "FD", "AH"]; fname = fnames_rmse[i])
+    plot_est(OLS[i].mρ[:,8], "OLS", fname = fnames_hist_OLS[i])
+    plot_est(FE[i].mρ[:,8], "FE", fname = fnames_hist_FE[i])
+    plot_est(FD[i].mρ[:,8], "FD", fname = fnames_hist_FD[i])
+    plot_est(AH[i].mρ[:,8], "AH", fname = fnames_hist_AH[i])
+end
