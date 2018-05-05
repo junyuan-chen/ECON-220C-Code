@@ -130,30 +130,33 @@ end
 OLSa, FEa, FDa, AHa = Estimates(), Estimates(), Estimates(), Estimates()
 OLSb3, FEb3, FDb3, AHb3 = Estimates(), Estimates(), Estimates(), Estimates()
 OLSb9, FEb9, FDb9, AHb9 = Estimates(), Estimates(), Estimates(), Estimates()
-OLSc, FEc, FDc, AHc = Estimates(), Estimates(), Estimates(), Estimates()
+OLSc1, FEc1, FDc1, AHc1 = Estimates(), Estimates(), Estimates(), Estimates()
+OLSc2, FEc2, FDc2, AHc2 = Estimates(), Estimates(), Estimates(), Estimates()
 
-OLS = [OLSa, OLSb3, OLSb9, OLSc]
-FE = [FEa, FEb3, FEb9, FEc]
-FD = [FDa, FDb3, FDb9, FDc]
-AH = [AHa, AHb3, AHb9, AHc]
-T = [6, 3, 9, 18]
-αs = [0.0, 0.0, 0.0, 5.0]
-fnames_bias = ["3a_bias", "3b3_bias", "3b9_bias", "3c_bias"]
-fnames_se = ["3a_se", "3b3_se", "3b9_se", "3c_se"]
-fnames_rmse = ["3a_rmse", "3b3_rmse", "3b9_rmse", "3c_rmse"]
-fnames_hist_OLS = ["3a_OLS", "3b3_OLS", "3b9_OLS", "3c_OLS"]
-fnames_hist_FE = ["3a_FE", "3b3_FE", "3b9_FE", "3c_FE"]
-fnames_hist_FD = ["3a_FD", "3b3_FD", "3b9_FD", "3c_FD"]
-fnames_hist_AH = ["3a_AH", "3b3_AH", "3b9_AH", "3c_AH"]
+OLS = [OLSa, OLSb3, OLSb9, OLSc1, OLSc2]
+FE = [FEa, FEb3, FEb9, FEc1, FEc2]
+FD = [FDa, FDb3, FDb9, FDc1, FDc2]
+AH = [AHa, AHb3, AHb9, AHc1, AHc2]
+T = [6, 3, 9, 18, 18]
+αs = [0.0, 0.0, 0.0, 0.0, 5.0]
+fnames_bias = ["3a_bias", "3b3_bias", "3b9_bias", "3c1_bias", "3c2_bias"]
+fnames_se = ["3a_se", "3b3_se", "3b9_se", "3c1_se", "3c2_se"]
+fnames_rmse = ["3a_rmse", "3b3_rmse", "3b9_rmse", "3c1_rmse", "3c2_rmse"]
+fnames_hist_OLS = ["3a_OLS", "3b3_OLS", "3b9_OLS", "3c1_OLS"]
+fnames_hist_FE = ["3a_FE", "3b3_FE", "3b9_FE", "3c1_FE"]
+fnames_hist_FD = ["3a_FD", "3b3_FD", "3b9_FD", "3c1_FD"]
+fnames_hist_AH = ["3a_AH", "3b3_AH", "3b9_AH", "3c1_AH"]
 
-for i = 4#1:length(OLS)
+for i = 1:length(OLS)
     srand(10)
     @time simulate!(OLS[i], FE[i], FD[i], AH[i], 100, T[i]; α = αs[i])
     plot_stat([OLS[i].vBias, FE[i].vBias, FD[i].vBias, AH[i].vBias], ["OLS", "FE", "FD", "AH"]; fname = fnames_bias[i])
     plot_stat([OLS[i].vSE, FE[i].vSE, FD[i].vSE, AH[i].vSE], ["OLS", "FE", "FD", "AH"]; fname = fnames_se[i])
     plot_stat([OLS[i].vRMSE, FE[i].vRMSE, FD[i].vRMSE, AH[i].vRMSE], ["OLS", "FE", "FD", "AH"]; fname = fnames_rmse[i])
-    plot_est(OLS[i].mρ[:,8], "OLS", fname = fnames_hist_OLS[i])
-    plot_est(FE[i].mρ[:,8], "FE", fname = fnames_hist_FE[i])
-    plot_est(FD[i].mρ[:,8], "FD", fname = fnames_hist_FD[i])
-    plot_est(AH[i].mρ[:,8], "AH", fname = fnames_hist_AH[i])
+    if i <= 4
+        plot_est(OLS[i].mρ[:,8], "OLS", fname = fnames_hist_OLS[i])
+        plot_est(FE[i].mρ[:,8], "FE", fname = fnames_hist_FE[i])
+        plot_est(FD[i].mρ[:,8], "FD", fname = fnames_hist_FD[i])
+        plot_est(AH[i].mρ[:,8], "AH", fname = fnames_hist_AH[i])
+    end
 end
