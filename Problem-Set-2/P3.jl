@@ -35,9 +35,9 @@ function Data(N::Int, T::Int)
     return Data(N, T, mY)
 end
 
-function gen_data!(D::Data, ρ::AbstractFloat)
+function gen_data!(D::Data, ρ::AbstractFloat, α::AbstractFloat)
     vα = randn(D.N)
-    D.mY[:,1] .= 0.5.*vα .+ D.mY[:,1] # Set Y_0
+    D.mY[:,1] .= α .+ 0.5.*vα .+ D.mY[:,1] # Set Y_0
     for t = 2:D.T+1
         D.mY[:,t] .= ρ.*D.mY[:,t-1] .+ vα .+ D.mY[:,t]
     end
@@ -82,11 +82,11 @@ function se(vEst::Array)
     return sqrt(mean(vEst.^2) - Avg^2)
 end
 
-function simulate!(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, N::Int, T::Int)
+function simulate!(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, N::Int, T::Int; α::AbstractFloat = 0.0)
     for (i, ρ) in enumerate(OLS.vPara)
         for n = 1:OLS.nReplic
             D = Data(N,T)
-            gen_data!(D, ρ)
+            gen_data!(D, ρ, α)
             OLS.mρ[n,i] = pooling_OLS(D)
             FE.mρ[n,i] = fixed_effects(D)
             FD.mρ[n,i] = first_difference(D)
@@ -130,23 +130,25 @@ end
 OLSa, FEa, FDa, AHa = Estimates(), Estimates(), Estimates(), Estimates()
 OLSb3, FEb3, FDb3, AHb3 = Estimates(), Estimates(), Estimates(), Estimates()
 OLSb9, FEb9, FDb9, AHb9 = Estimates(), Estimates(), Estimates(), Estimates()
+OLSc, FEc, FDc, AHc = Estimates(), Estimates(), Estimates(), Estimates()
 
-OLS = [OLSa, OLSb3, OLSb9]
-FE = [FEa, FEb3, FEb9]
-FD = [FDa, FDb3, FDb9]
-AH = [AHa, AHb3, AHb9]
-T = [6, 3, 9]
-fnames_bias = ["3a_bias", "3b3_bias", "3b9_bias"]
-fnames_se = ["3a_se", "3b3_se", "3b9_se"]
-fnames_rmse = ["3a_rmse", "3b3_rmse", "3b9_rmse"]
-fnames_hist_OLS = ["3a_OLS", "3b3_OLS", "3b9_OLS"]
-fnames_hist_FE = ["3a_FE", "3b3_FE", "3b9_FE"]
-fnames_hist_FD = ["3a_FD", "3b3_FD", "3b9_FD"]
-fnames_hist_AH = ["3a_AH", "3b3_AH", "3b9_AH"]
+OLS = [OLSa, OLSb3, OLSb9, OLSc]
+FE = [FEa, FEb3, FEb9, FEc]
+FD = [FDa, FDb3, FDb9, FDc]
+AH = [AHa, AHb3, AHb9, AHc]
+T = [6, 3, 9, 18]
+αs = [0.0, 0.0, 0.0, 5.0]
+fnames_bias = ["3a_bias", "3b3_bias", "3b9_bias", "3c_bias"]
+fnames_se = ["3a_se", "3b3_se", "3b9_se", "3c_se"]
+fnames_rmse = ["3a_rmse", "3b3_rmse", "3b9_rmse", "3c_rmse"]
+fnames_hist_OLS = ["3a_OLS", "3b3_OLS", "3b9_OLS", "3c_OLS"]
+fnames_hist_FE = ["3a_FE", "3b3_FE", "3b9_FE", "3c_FE"]
+fnames_hist_FD = ["3a_FD", "3b3_FD", "3b9_FD", "3c_FD"]
+fnames_hist_AH = ["3a_AH", "3b3_AH", "3b9_AH", "3c_AH"]
 
-for i = 1:length(OLS)
+for i = 4#1:length(OLS)
     srand(10)
-    @time simulate!(OLS[i], FE[i], FD[i], AH[i], 100, T[i])
+    @time simulate!(OLS[i], FE[i], FD[i], AH[i], 100, T[i]; α = αs[i])
     plot_stat([OLS[i].vBias, FE[i].vBias, FD[i].vBias, AH[i].vBias], ["OLS", "FE", "FD", "AH"]; fname = fnames_bias[i])
     plot_stat([OLS[i].vSE, FE[i].vSE, FD[i].vSE, AH[i].vSE], ["OLS", "FE", "FD", "AH"]; fname = fnames_se[i])
     plot_stat([OLS[i].vRMSE, FE[i].vRMSE, FD[i].vRMSE, AH[i].vRMSE], ["OLS", "FE", "FD", "AH"]; fname = fnames_rmse[i])
