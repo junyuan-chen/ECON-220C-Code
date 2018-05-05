@@ -1,6 +1,7 @@
 using PyPlot
 rc("font", size=9)
 using LaTeXStrings
+using Distributions
 
 mutable struct Estimates{TF<:AbstractFloat, TI<:Int}
     nReplic::TI
@@ -99,24 +100,58 @@ function simulate!(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, 
     end
 end
 
+###
 function plot_stat(stats::Array, labels::Array; fname::String = "no_name")
     matplotlib[:style][:use]("seaborn-whitegrid")
-    fig, ax = subplots(figsize=(3.2, 3))
+    fig, ax = subplots(figsize=(2.2, 4))
     for (i, stat) in enumerate(stats)
-        ax[:plot](0:0.1:1, stat, linewidth = 2, label = labels[i])
+        ax[:plot](0:0.1:1, stat, marker=".", linewidth = 1, label = labels[i])
+    end
+    xlabel(L"$\rho$")
+    ax[:legend](loc = "upper right", frameon = true)
+    tight_layout(pad = 0.1)
+    savefig(string("Figure/", fname, ".pdf"))
+end
+###
+function plot_est(est::Array, lab::String; fname::String = "no_name")
+    matplotlib[:style][:use]("seaborn-whitegrid")
+    fig, ax = subplots(figsize=(3.2, 3))
+#    for (i, est) in enumerate(ests)
+        ax[:hist](est, bins = 20, alpha = 0.8, density = true, label = lab)
+        xlims = ax[:get_xlim]()
+        @show rang = collect(linspace(xlims[1], xlims[2], 100))
+        d = Normal(mean(est), std(est))
+        ax[:plot](rang, pdf(d,rang))
+#    end
+    ax[:legend](loc = "upper right", frameon = true)
+    tight_layout(pad = 0.1)
+    #savefig(string("Figure/", fname, ".pdf"))
+end
+###
+function plot_est(ests::Array, labs::Array; fname::String = "no_name")
+    matplotlib[:style][:use]("seaborn-whitegrid")
+    fig, ax = subplots(figsize=(5.2, 3))
+    for (i, est) in enumerate(ests)
+        ax[:hist](est, bins = 20, alpha = 0.8, label = labs[i])
     end
     ax[:legend](loc = "upper right", frameon = true)
     tight_layout(pad = 0.1)
     #savefig(string("Figure/", fname, ".pdf"))
 end
+#plot_est([OLSa.mρ[:,8], FEa.mρ[:,8], FDa.mρ[:,8]], ["OLS", "FE", "FD"])
 
-
-
-
-
+###
 
 OLSa, FEa, FDa, AHa = Estimates(), Estimates(), Estimates(), Estimates()
 
 srand(10)
-@time simulate!(OLSa, FEa, FDa, AHa, 100, 6)
-plot_stat([OLSa.vBias, FEa.vBias, FDa.vBias, AHa.vBias], ["OLS", "FE", "FD", "AH"])
+@time simulate!(OLSa, FEa, FDa, AHa, 100, 9)
+plot_stat([OLSa.vBias, FEa.vBias, FDa.vBias, AHa.vBias], ["OLS", "FE", "FD", "AH"]; fname = "3a_bias")
+plot_stat([OLSa.vSE, FEa.vSE, FDa.vSE, AHa.vSE], ["OLS", "FE", "FD", "AH"]; fname = "3a_se")
+plot_stat([OLSa.vRMSE, FEa.vRMSE, FDa.vRMSE, AHa.vRMSE], ["OLS", "FE", "FD", "AH"]; fname = "3a_rmse")
+
+
+plot_est(OLSa.mρ[:,8], "OLS")
+plot_est(FEa.mρ[:,8], "FE")
+plot_est(FDa.mρ[:,8], "FD")
+plot_est(AHa.mρ[:,8], "AH")
