@@ -1,3 +1,7 @@
+using PyPlot
+rc("font", size=9)
+using LaTeXStrings
+
 mutable struct Estimates{TF<:AbstractFloat, TI<:Int}
     nReplic::TI
     nPara::TI
@@ -95,8 +99,24 @@ function simulate!(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, 
     end
 end
 
+function plot_stat(stats::Array, labels::Array; fname::String = "no_name")
+    matplotlib[:style][:use]("seaborn-whitegrid")
+    fig, ax = subplots(figsize=(3.2, 3))
+    for (i, stat) in enumerate(stats)
+        ax[:plot](0:0.1:1, stat, linewidth = 2, label = labels[i])
+    end
+    ax[:legend](loc = "upper right", frameon = true)
+    tight_layout(pad = 0.1)
+    #savefig(string("Figure/", fname, ".pdf"))
+end
+
+
+
+
+
 
 OLSa, FEa, FDa, AHa = Estimates(), Estimates(), Estimates(), Estimates()
 
 srand(10)
 @time simulate!(OLSa, FEa, FDa, AHa, 100, 6)
+plot_stat([OLSa.vBias, FEa.vBias, FDa.vBias, AHa.vBias], ["OLS", "FE", "FD", "AH"])
