@@ -35,6 +35,10 @@ function Data(N::Int, T::Int)
     return Data(N, T, mY)
 end
 
+function reuse!(D::Data)
+    randn!(D.mY) # Update u_it
+end
+
 function gen_data!(D::Data, ρ::AbstractFloat)
     vα = randn(D.N)
     D.mY[:,1] .= 0.5.*vα .+ D.mY[:,1] # Set Y_0
@@ -83,9 +87,11 @@ function se(vEst::Array)
 end
 
 function simulate!(OLS::Estimates, FE::Estimates, FD::Estimates, AH::Estimates, N::Int, T::Int)
+    D = Data(N,T)
     for (i, ρ) in enumerate(OLS.vPara)
         for n = 1:OLS.nReplic
             D = Data(N,T)
+            reuse!(D)
             gen_data!(D, ρ)
             OLS.mρ[n,i] = pooling_OLS(D)
             FE.mρ[n,i] = fixed_effects(D)
