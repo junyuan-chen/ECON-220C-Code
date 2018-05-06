@@ -23,5 +23,12 @@ eststo: xtreg logC L.logC logP logY logPn, r fe
 esttab using Tables/P4c.tex, se nostar booktabs replace
 
 * Part (d)
-eststo: xtivreg logC (L.logC = L2.logC) logP logY logPn i.year, fe
+eststo: xtreg logC L.logC logP logY logPn i.year, r fe
 esttab using Tables/P4d.tex, se nostar drop (*year*) booktabs replace
+testparm i.year
+
+* Part (e)
+eststo: xi: xtivreg logC (L.logC = L2.logC) logP logY logPn i.year, fd
+esttab using Tables/P4e.tex, se nostar drop (*year*) booktabs replace
+
+* Part (g)
