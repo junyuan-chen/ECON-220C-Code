@@ -2,6 +2,7 @@
 Figure/
 Figures/
 
+*.csv
 *.html
 
 *.ipynb
@@ -273,4 +274,3 @@ TSWLatexianTemp*
 *.pdf
 *.png
 *.tif
-
