@@ -1,6 +1,7 @@
 ## Folders to be ignored:
 Figure/
 Figures/
+Tables/
 
 *.csv
 *.html
