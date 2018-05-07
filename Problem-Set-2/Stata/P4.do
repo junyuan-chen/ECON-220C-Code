@@ -1,5 +1,5 @@
 * ECON 220C Problem Set 2
-* Problem 4
+* Problem 4 (a)-(e)
 * Junyuan Chen
 
 clear
@@ -21,11 +21,8 @@ eststo: xtreg logC L.logC logP logY logPn, r fe
 
 * Part (d)
 eststo: xtreg logC L.logC logP logY logPn i.year, r fe
-esttab using Tables/P4a-d.tex, se nostar drop (*year* _cons) booktabs replace
 testparm i.year
 
 * Part (e)
 eststo: xi: xtivreg logC (L.logC = L2.logC) logP logY logPn i.year, fd
-esttab using Tables/P4e.tex, se nostar drop (*year*) booktabs replace
-
-* Part (g)
+esttab using Tables/P4a-e.tex, se nostar drop (*year* _cons) booktabs replace
