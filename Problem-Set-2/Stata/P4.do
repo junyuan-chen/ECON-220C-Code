@@ -26,3 +26,6 @@ testparm i.year
 * Part (e)
 eststo: xi: xtivreg logC (L.logC = L2.logC) logP logY logPn i.year, fd
 esttab using Tables/P4a-e.tex, se nostar drop (*year* _cons) booktabs replace
+
+* Part (e) CORRECT WAY
+xi: ivregress gmm D.logC (LD.logC = L2.logC) D.logP D.logY D.logPn i.year
