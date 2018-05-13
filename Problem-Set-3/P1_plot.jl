@@ -2,13 +2,13 @@ using PyPlot
 rc("font", size=9)
 using LaTeXStrings
 
-function plot_qs(Q::Function, L::AbstractFloat, R::AbstractFloat; N::Int = 200, fname::String = "no_name")
+function plot_qs(Q::Function, L::AbstractFloat, R::AbstractFloat; N::Int = 1000, fname::String = "no_name")
     matplotlib[:style][:use]("seaborn-whitegrid")
     fig, ax = subplots(figsize=(4, 3.5))
     X = linspace(L, R, N)
-    for i = 1:2:10 #1:5:I*5
+    for i = 1:2:7 #1:5:I*5
         F = x -> Q(x,i)
-        ax[:plot](X, F.(X), linewidth = 1, label = "n = $i ")
+        ax[:plot](X, F.(X), ".", markersize=1, label = "n = $i ")
         println(minimum(F.(X)))
     end
     xlabel(L"$\theta$")
