@@ -4,7 +4,7 @@ using LaTeXStrings
 
 function plot_qs(Q::Function, L::AbstractFloat, R::AbstractFloat; N::Int = 200, fname::String = "no_name")
     matplotlib[:style][:use]("seaborn-whitegrid")
-    fig, ax = subplots(figsize=(6, 4))
+    fig, ax = subplots(figsize=(4, 3.5))
     X = linspace(L, R, N)
     for i = 1:2:10 #1:5:I*5
         F = x -> Q(x,i)
@@ -15,7 +15,7 @@ function plot_qs(Q::Function, L::AbstractFloat, R::AbstractFloat; N::Int = 200, 
     ylabel(L"$Q_n(\theta)$")
     ax[:legend](frameon = true)
     tight_layout(pad = 0.1)
-    #savefig(string("Figure/", fname, ".pdf"))
+    savefig(string("Figure/", fname, ".pdf"))
 end
 
 function Q(x::AbstractFloat, n::Int)
@@ -34,4 +34,4 @@ function Q(x::AbstractFloat, n::Int)
     end
 end
 
-plot_qs(Q, -2.0, 1.0)
+plot_qs(Q, -2.0, 1.0; fname = "P1c")
