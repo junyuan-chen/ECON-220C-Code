@@ -29,3 +29,5 @@ esttab using Tables/P4a-e.tex, se nostar drop (*year* _cons) booktabs replace
 
 * Part (e) CORRECT WAY
 xi: ivregress gmm D.logC (LD.logC = L2.logC) D.logP D.logY D.logPn i.year
+
+log close
