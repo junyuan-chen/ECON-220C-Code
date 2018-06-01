@@ -2,4 +2,4 @@
 * text=auto
 
 # Exclude Jupyter Notebooks from language statistics
-.ipynb linguist-documentation
+*.ipynb linguist-documentation
