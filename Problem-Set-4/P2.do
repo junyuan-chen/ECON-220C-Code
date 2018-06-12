@@ -7,7 +7,8 @@ quietly set obs 50000
 /************* DGP ********************/
 gen e1 = rnormal()
 gen e2 = rnormal()
-gen z = rnormal()
+*gen z = rnormal()
+gen z = 5*rnormal()
 gen x1 = z + e1
 gen x2 = rnormal()
 gen x = x1 + x2
