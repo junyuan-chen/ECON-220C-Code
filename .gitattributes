@@ -3,3 +3,6 @@
 
 # Exclude Jupyter Notebooks from language statistics
 *.ipynb linguist-documentation
+
+# Exclude Stata esttab generated tex files
+*.tex linguist-generated=true
